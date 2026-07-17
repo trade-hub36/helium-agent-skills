@@ -6,6 +6,7 @@ import { latencyBenchmarkerSkill } from './skills/latencyBenchmarker.js';
 import { migrationPlannerSkill } from './skills/migrationPlanner.js';
 import { redisManagerSkill } from './skills/redisManager.js';
 import { multiAgentConsensusSuite } from './skills/agents/consensusAgents.js';
+import { HeliumDebateEngine } from './skills/agents/debateEngine.js'; // Nouvel import
 
 export {
   fileManagerSkill,
@@ -17,10 +18,10 @@ export {
   latencyBenchmarkerSkill,
   migrationPlannerSkill,
   redisManagerSkill,
-  multiAgentConsensusSuite
+  multiAgentConsensusSuite,
+  HeliumDebateEngine // Export du moteur de débat
 };
 
-// Export de l'ensemble des compétences regroupées pour un chargement dynamique aisé
 export const heliumSkills = [
   fileManagerSkill,
   dbInspectorSkill,
@@ -32,4 +33,4 @@ export const heliumSkills = [
   ...multiAgentConsensusSuite
 ];
 
-console.log("Suite Helium DB chargée : 7 Outils Système et 10 Agents de Consensus prêts.");
+console.log("Suite Helium DB chargée : 7 Outils Système, 10 Agents et 1 Moteur de Débat.");
