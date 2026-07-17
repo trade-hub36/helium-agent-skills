@@ -2,15 +2,20 @@ import {
   schemaExplorerAgent, 
   queryTrafficAgent, 
   writeLoadAgent, 
-  securityComplianceAgent, 
   latencyBenchmarkerAgent, 
   costOptimizerAgent, 
+  securityComplianceAgent, 
   skepticAgent, 
-  sqlGeneratorAgent, 
   zeroDowntimePlannerAgent, 
-  leadAgent,
-  AgentResponse 
+  sqlGeneratorAgent, 
+  leadAgent 
 } from './consensusAgents.js';
+
+import { 
+  aiCostNegotiatorAgent, 
+  aiSecurityGuardianAgent, 
+  aiAutoRecoveryAgent 
+} from './aiAgents.js';
 
 export interface DebateSessionInput {
   connectionString: string;
@@ -25,10 +30,6 @@ export interface DebateLogMessage {
   data?: any;
 }
 
-/**
- * Moteur d'orchestration de débat multi-agents d'Helium DB.
- * Fait dialoguer et négocier les 10 agents spécialisés pour converger vers un plan de Sharding.
- */
 export class HeliumDebateEngine {
   private logs: DebateLogMessage[] = [];
 
@@ -41,9 +42,6 @@ export class HeliumDebateEngine {
     });
   }
 
-  /**
-   * Exécute le protocole de débat asynchrone complet (Consensus Room).
-   */
   async runConsensusDebate(input: DebateSessionInput): Promise<{
     success: boolean;
     debateLogs: DebateLogMessage[];
@@ -51,72 +49,42 @@ export class HeliumDebateEngine {
   }> {
     this.log('System', 'Initialisation de la Consensus Room d\'Helium DB...');
 
-    // ==========================================
-    // DEBATE TURN 1 : COLLECTE ET ANALYSE INITIALE
-    // ==========================================
-    this.log('System', '--- TOUR 1 : ANALYSE ET DIAGNOSTIC DES INFRASTRUCTURES ---');
-
-    // 1. Schema Explorer extrait la structure
+    // TOUR 1 : ANALYSE DES STRUCTURES ET VULNÉRABILITÉS (AVEC AGENT IA DE SÉCURITÉ)
+    this.log('System', '--- TOUR 1 : DIAGNOSTIC ET SÉCURITÉ IA ---');
     const schemaInfo = { tablesAnalyzed: 5, tables: ['users', 'products', 'orders', 'logs', 'messages'] }; 
     const step1Result = await schemaExplorerAgent.run({ rawSchemaInfo: JSON.stringify(schemaInfo) });
     this.log(step1Result.agentName, step1Result.verdict, step1Result.data);
 
-    // 2. Query Traffic Analyst évalue les lectures
+    // Analyse de sécurité par notre nouvel Agent IA de Sécurité
+    const securityIaResult = await aiSecurityGuardianAgent.run({ queriesToAnalyze: input.rawQueries });
+    this.log(securityIaResult.agentName, securityIaResult.verdict, securityIaResult.data);
+
+    // TOUR 2 : STRATÉGIE ET TRAITEMENT ÉCONOMIQUE (AVEC AGENT IA FINOPS)
+    this.log('System', '--- TOUR 2 : OPTIMISATION DES COÛTS VIA L\'IA ---');
     const step2Result = await queryTrafficAgent.run({ queryLogs: JSON.stringify(input.rawQueries) });
-    this.log(step2Result.agentName, step2Result.verdict, { analyzedQueriesCount: input.rawQueries.length });
+    this.log(step2Result.agentName, step2Result.verdict);
 
-    // 3. Write-Load Auditor évalue la pression d'écriture
-    const step3Result = await writeLoadAgent.run({ writeLogs: JSON.stringify(input.rawQueries) });
-    this.log(step3Result.agentName, step3Result.verdict, step3Result.data);
+    // Notre nouvel Agent IA de négociation financière intervient
+    const costIaResult = await aiCostNegotiatorAgent.run({ 
+      currentConfig: "Neon + Supabase Sharding", 
+      databaseSizeMb: 450 
+    });
+    this.log(costIaResult.agentName, costIaResult.verdict, costIaResult.data);
 
+    // TOUR 3 : RÉSILIENCE ET SIMULATION DE PANNE (AVEC AGENT IA RECOVERY)
+    this.log('System', '--- TOUR 3 : VÉRIFICATION DE LA RÉSILIENCE ET SCÉNARIOS DE PANNE ---');
+    const step7Result = await skepticAgent.run({ currentConsensusPlan: "Utiliser Neon et Supabase." });
+    this.log(step7Result.agentName, step7Result.verdict);
 
-    // ==========================================
-    // DEBATE TURN 2 : RECOMMANDATIONS & CONTRAINTES
-    // ==========================================
-    this.log('System', '--- TOUR 2 : FORMULATION DU STRATÉGIE ET CONTRAINTES ---');
+    // Simulation d'une panne de shard et diagnostic de l'agent de récupération IA
+    const recoveryIaResult = await aiAutoRecoveryAgent.run({
+      failingShardName: 'shard-neon-orders',
+      failureReason: 'TCP Connection Timeout (Exceeded 5000ms)'
+    });
+    this.log(recoveryIaResult.agentName, recoveryIaResult.verdict, recoveryIaResult.data);
 
-    // 4. Latency Benchmarker propose les localisations optimales
-    const step4Result = await latencyBenchmarkerAgent.run({ userRegions: input.targetRegions });
-    this.log(step4Result.agentName, step4Result.verdict, step4Result.data);
-
-    // 5. Cost Optimizer évalue la stratégie d'hébergement économique (Neon, Supabase...)
-    const step5Result = await costOptimizerAgent.run({ databaseSize: 250 }); // Exemple 250 MB
-    this.log(step5Result.agentName, step5Result.verdict, step5Result.data);
-
-    // 6. Security Compliance inspecte les vulnérabilités de la partition
-    const proposedDraft = "Partitionner la table 'orders' sur Neon US-East, et 'logs' sur Supabase EU-West. Garder 'users' sur la base mère.";
-    const step6Result = await securityComplianceAgent.run({ proposedSharding: proposedDraft });
-    this.log(step6Result.agentName, step6Result.verdict, step6Result.data);
-
-
-    // ==========================================
-    // DEBATE TURN 3 : LE CONFLIT, LA CRITIQUE & L'OPPOSANT
-    // ==========================================
-    this.log('System', '--- TOUR 3 : PROCÈS CONTRADICTOIRE & VALIDATION TECHNIQUE ---');
-
-    // 7. The Skeptic Agent attaque le plan actuel pour en trouver les failles
-    const currentConsensusText = `Plan : Sharder 'orders' (Neon) & 'logs' (Supabase). Sauvegarde sur Mother-DB. Latence cible : ${input.targetRegions.join(', ')}.`;
-    const step7Result = await skepticAgent.run({ currentConsensusPlan: currentConsensusText });
-    this.log(step7Result.agentName, step7Result.verdict, step7Result.data);
-
-    // Prise en compte de la critique par les planificateurs techniques
-    this.log('System', 'Ajustement des configurations suite aux critiques de l\'agent sceptique...');
-
-    // 8. Zero-Downtime Planner prépare la migration à chaud sans coupure
-    const step8Result = await zeroDowntimePlannerAgent.run({ migrationComplexity: 'high' });
-    this.log(step8Result.agentName, step8Result.verdict, step8Result.data);
-
-    // 9. SQL Generator écrit les scripts DDL correspondants
-    const step9Result = await sqlGeneratorAgent.run({ tablesToMove: ['orders', 'logs'] });
-    this.log(step9Result.agentName, step9Result.verdict, { migrationScriptSnippet: "CREATE TABLE shard_orders (...) ;" });
-
-
-    // ==========================================
     // SYNTHÈSE DE CONCILIATION FINALE
-    // ==========================================
-    this.log('System', '--- SYNTHÈSE DE CONCILIATION FINALE ---');
-
-    // 10. The Facilitator / Lead Agent compile les retours et clôture le consensus
+    this.log('System', '--- SYNTHÈSE DE CONCILIATION ---');
     const finalReportResult = await leadAgent.run({ agentResponses: JSON.stringify(this.logs) });
     this.log(finalReportResult.agentName, finalReportResult.verdict, finalReportResult.data);
 

@@ -5,8 +5,25 @@ import { costCalculatorSkill } from './skills/costCalculator.js';
 import { latencyBenchmarkerSkill } from './skills/latencyBenchmarker.js';
 import { migrationPlannerSkill } from './skills/migrationPlanner.js';
 import { redisManagerSkill } from './skills/redisManager.js';
+
+// Nouveaux imports de skills
+import {
+  ddlSchemaGeneratorSkill,
+  healthPingCheckSkill,
+  backupSchedulerSkill,
+  sqlInjectionScannerSkill,
+  anomalyDetectorSkill
+} from './skills/additionalSkills.js';
+
+// Nouveaux imports d'agents IA
+import {
+  aiCostNegotiatorAgent,
+  aiSecurityGuardianAgent,
+  aiAutoRecoveryAgent
+} from './skills/agents/aiAgents.js';
+
 import { multiAgentConsensusSuite } from './skills/agents/consensusAgents.js';
-import { HeliumDebateEngine } from './skills/agents/debateEngine.js'; // Nouvel import
+import { HeliumDebateEngine } from './skills/agents/debateEngine.js';
 
 export {
   fileManagerSkill,
@@ -18,8 +35,19 @@ export {
   latencyBenchmarkerSkill,
   migrationPlannerSkill,
   redisManagerSkill,
+  
+  // Nouveaux exports
+  ddlSchemaGeneratorSkill,
+  healthPingCheckSkill,
+  backupSchedulerSkill,
+  sqlInjectionScannerSkill,
+  anomalyDetectorSkill,
+  aiCostNegotiatorAgent,
+  aiSecurityGuardianAgent,
+  aiAutoRecoveryAgent,
+  
   multiAgentConsensusSuite,
-  HeliumDebateEngine // Export du moteur de débat
+  HeliumDebateEngine
 };
 
 export const heliumSkills = [
@@ -30,7 +58,12 @@ export const heliumSkills = [
   latencyBenchmarkerSkill,
   migrationPlannerSkill,
   redisManagerSkill,
+  ddlSchemaGeneratorSkill,
+  healthPingCheckSkill,
+  backupSchedulerSkill,
+  sqlInjectionScannerSkill,
+  anomalyDetectorSkill,
   ...multiAgentConsensusSuite
 ];
 
-console.log("Suite Helium DB chargée : 7 Outils Système, 10 Agents et 1 Moteur de Débat.");
+console.log("Suite Helium DB élargie : 12 Outils Système, 13 Agents (dont 3 IA) et 1 Moteur de Débat.");
