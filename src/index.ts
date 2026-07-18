@@ -6,7 +6,7 @@ import { latencyBenchmarkerSkill } from './skills/latencyBenchmarker.js';
 import { migrationPlannerSkill } from './skills/migrationPlanner.js';
 import { redisManagerSkill } from './skills/redisManager.js';
 
-// Nouveaux imports de skills
+// Skills supplémentaires
 import {
   ddlSchemaGeneratorSkill,
   healthPingCheckSkill,
@@ -15,15 +15,35 @@ import {
   anomalyDetectorSkill
 } from './skills/additionalSkills.js';
 
-// Nouveaux imports d'agents IA
+// 8 NOUVEAUX SKILLS (Lecture & SQL)
+import {
+  sqlParserSkill,
+  indexInspectorSkill,
+  tableSizeEstimatorSkill,
+  crossJoinDetectorSkill,
+  schemaDependencySkill,
+  sqlSanitizerSkill,
+  indexSuggesterSkill,
+  rawSchemaExtractorSkill
+} from './skills/additionalSkills.js';
+
+// Nouveaux agents IA
 import {
   aiCostNegotiatorAgent,
   aiSecurityGuardianAgent,
-  aiAutoRecoveryAgent
+  aiAutoRecoveryAgent,
+  aiSqlQueryOptimizerAgent,
+  aiDatabaseArchitectAgent,
+  aiQueryRouterSupervisorAgent,
+  aiSchemaConverterAgent
 } from './skills/agents/aiAgents.js';
 
 import { multiAgentConsensusSuite } from './skills/agents/consensusAgents.js';
 import { HeliumDebateEngine } from './skills/agents/debateEngine.js';
+// Import du Proxy
+import { HeliumProxyServer } from './proxy/proxyServer.js';
+import { ProxyConfigSchema, ShardConfigSchema } from './proxy/types.js';
+
 
 export {
   fileManagerSkill,
@@ -36,18 +56,35 @@ export {
   migrationPlannerSkill,
   redisManagerSkill,
   
-  // Nouveaux exports
+  // Nouveaux Skills système
   ddlSchemaGeneratorSkill,
   healthPingCheckSkill,
   backupSchedulerSkill,
   sqlInjectionScannerSkill,
   anomalyDetectorSkill,
+  sqlParserSkill,
+  indexInspectorSkill,
+  tableSizeEstimatorSkill,
+  crossJoinDetectorSkill,
+  schemaDependencySkill,
+  sqlSanitizerSkill,
+  indexSuggesterSkill,
+  rawSchemaExtractorSkill,
+  
+  // Agents IA
   aiCostNegotiatorAgent,
   aiSecurityGuardianAgent,
   aiAutoRecoveryAgent,
+  aiSqlQueryOptimizerAgent,
+  aiDatabaseArchitectAgent,
+  aiQueryRouterSupervisorAgent,
+  aiSchemaConverterAgent,
   
   multiAgentConsensusSuite,
-  HeliumDebateEngine
+  HeliumDebateEngine,
+  HeliumProxyServer,
+  ProxyConfigSchema,
+  ShardConfigSchema
 };
 
 export const heliumSkills = [
@@ -63,7 +100,15 @@ export const heliumSkills = [
   backupSchedulerSkill,
   sqlInjectionScannerSkill,
   anomalyDetectorSkill,
+  sqlParserSkill,
+  indexInspectorSkill,
+  tableSizeEstimatorSkill,
+  crossJoinDetectorSkill,
+  schemaDependencySkill,
+  sqlSanitizerSkill,
+  indexSuggesterSkill,
+  rawSchemaExtractorSkill,
   ...multiAgentConsensusSuite
 ];
 
-console.log("Suite Helium DB élargie : 12 Outils Système, 13 Agents (dont 3 IA) et 1 Moteur de Débat.");
+console.log("Suite Helium DB élargie : 20 Outils Système, 17 Agents d'orchestration (Locaux et IA).");

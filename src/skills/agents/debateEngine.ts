@@ -2,19 +2,28 @@ import {
   schemaExplorerAgent, 
   queryTrafficAgent, 
   writeLoadAgent, 
-  latencyBenchmarkerAgent, 
-  costOptimizerAgent, 
-  securityComplianceAgent, 
   skepticAgent, 
   zeroDowntimePlannerAgent, 
-  sqlGeneratorAgent, 
   leadAgent 
 } from './consensusAgents.js';
 
+// Nouveaux agents locaux importés
+import {
+  indexStrategistAgent,
+  queryJoinAuditorAgent,
+  volumetryMonitorAgent,
+  schemaDependencyGuardAgent
+} from './consensusAgents.js';
+
+// Nouveaux agents IA importés
 import { 
   aiCostNegotiatorAgent, 
   aiSecurityGuardianAgent, 
-  aiAutoRecoveryAgent 
+  aiAutoRecoveryAgent,
+  aiSqlQueryOptimizerAgent,
+  aiDatabaseArchitectAgent,
+  aiQueryRouterSupervisorAgent,
+  aiSchemaConverterAgent
 } from './aiAgents.js';
 
 export interface DebateSessionInput {
@@ -47,44 +56,54 @@ export class HeliumDebateEngine {
     debateLogs: DebateLogMessage[];
     finalReport: any;
   }> {
-    this.log('System', 'Initialisation de la Consensus Room d\'Helium DB...');
+    this.log('System', 'Démarrage de la suite analytique Helium DB...');
 
-    // TOUR 1 : ANALYSE DES STRUCTURES ET VULNÉRABILITÉS (AVEC AGENT IA DE SÉCURITÉ)
-    this.log('System', '--- TOUR 1 : DIAGNOSTIC ET SÉCURITÉ IA ---');
-    const schemaInfo = { tablesAnalyzed: 5, tables: ['users', 'products', 'orders', 'logs', 'messages'] }; 
-    const step1Result = await schemaExplorerAgent.run({ rawSchemaInfo: JSON.stringify(schemaInfo) });
-    this.log(step1Result.agentName, step1Result.verdict, step1Result.data);
+    // TOUR 1 : ANALYSE STATIQUE DU LOG DE REQUÊTES ET SÉCURITÉ
+    this.log('System', '--- TOUR 1 : LECTURE DU SCHÉMA ET ANALYSE SYNTAXIQUE ---');
+    const step1Result = await schemaExplorerAgent.run({ rawSchemaInfo: input.connectionString });
+    this.log(step1Result.agentName, step1Result.verdict);
 
-    // Analyse de sécurité par notre nouvel Agent IA de Sécurité
-    const securityIaResult = await aiSecurityGuardianAgent.run({ queriesToAnalyze: input.rawQueries });
-    this.log(securityIaResult.agentName, securityIaResult.verdict, securityIaResult.data);
+    // Audit des Jointures SQL potentiellement critiques (Jointures inter-shards)
+    const joinAuditor = await queryJoinAuditorAgent.run({ sql: input.rawQueries[0] });
+    this.log(joinAuditor.agentName, joinAuditor.verdict);
 
-    // TOUR 2 : STRATÉGIE ET TRAITEMENT ÉCONOMIQUE (AVEC AGENT IA FINOPS)
-    this.log('System', '--- TOUR 2 : OPTIMISATION DES COÛTS VIA L\'IA ---');
-    const step2Result = await queryTrafficAgent.run({ queryLogs: JSON.stringify(input.rawQueries) });
-    this.log(step2Result.agentName, step2Result.verdict);
+    // AI SQL Optimizer intervient pour examiner la requête la plus lente
+    const aiSqlOptimizer = await aiSqlQueryOptimizerAgent.run({ slowQuery: input.rawQueries[0] });
+    this.log(aiSqlOptimizer.agentName, aiSqlOptimizer.verdict, aiSqlOptimizer.data);
 
-    // Notre nouvel Agent IA de négociation financière intervient
-    const costIaResult = await aiCostNegotiatorAgent.run({ 
-      currentConfig: "Neon + Supabase Sharding", 
-      databaseSizeMb: 450 
+
+    // TOUR 2 : ANALYSE VOLUMÉTRIQUE ET ARCHITECTURE SHARDING
+    this.log('System', '--- TOUR 2 : VOLUMÉTRIE ET PLANIFICATION DE L\'ARCHITECTURE (IA) ---');
+    const volResult = await volumetryMonitorAgent.run({ tableSizes: "orders: 1.2M rows" });
+    this.log(volResult.agentName, volResult.verdict);
+
+    // L'architecte IA planifie le partitionnement idéal
+    const aiArchitect = await aiDatabaseArchitectAgent.run({ schemaDetails: "users(id), orders(id, user_id), logs(id, message)" });
+    this.log(aiArchitect.agentName, aiArchitect.verdict, aiArchitect.data);
+
+    // L'agent superviseur IA valide la direction des requêtes vers le futur proxy
+    const aiRouter = await aiQueryRouterSupervisorAgent.run({ 
+      incomingQuery: input.rawQueries[0], 
+      activeShards: ['mother-db', 'shard-neon-orders'] 
     });
-    this.log(costIaResult.agentName, costIaResult.verdict, costIaResult.data);
+    this.log(aiRouter.agentName, aiRouter.verdict, aiRouter.data);
 
-    // TOUR 3 : RÉSILIENCE ET SIMULATION DE PANNE (AVEC AGENT IA RECOVERY)
-    this.log('System', '--- TOUR 3 : VÉRIFICATION DE LA RÉSILIENCE ET SCÉNARIOS DE PANNE ---');
-    const step7Result = await skepticAgent.run({ currentConsensusPlan: "Utiliser Neon et Supabase." });
-    this.log(step7Result.agentName, step7Result.verdict);
 
-    // Simulation d'une panne de shard et diagnostic de l'agent de récupération IA
-    const recoveryIaResult = await aiAutoRecoveryAgent.run({
-      failingShardName: 'shard-neon-orders',
-      failureReason: 'TCP Connection Timeout (Exceeded 5000ms)'
+    // TOUR 3 : PRÉPARATION DE LA MIGRATION ET DU CONVERTISSEUR DE SCHÉMA
+    this.log('System', '--- TOUR 3 : PRÉPARATION ET MIGRATION ---');
+    const step8Result = await zeroDowntimePlannerAgent.run({ migrationComplexity: 'medium' });
+    this.log(step8Result.agentName, step8Result.verdict);
+
+    // AI Schema Converter prépare le DDL cible
+    const aiConverter = await aiSchemaConverterAgent.run({ 
+      sourceSchema: "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY)", 
+      targetDialect: "PostgreSQL" 
     });
-    this.log(recoveryIaResult.agentName, recoveryIaResult.verdict, recoveryIaResult.data);
+    this.log(aiConverter.agentName, aiConverter.verdict, aiConverter.data);
 
-    // SYNTHÈSE DE CONCILIATION FINALE
-    this.log('System', '--- SYNTHÈSE DE CONCILIATION ---');
+
+    // SYNTHÈSE FINALE DU CONSEIL
+    this.log('System', '--- COMPTE RENDU DE CONCILIATION MULTI-AGENTS ---');
     const finalReportResult = await leadAgent.run({ agentResponses: JSON.stringify(this.logs) });
     this.log(finalReportResult.agentName, finalReportResult.verdict, finalReportResult.data);
 

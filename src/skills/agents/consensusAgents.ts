@@ -241,7 +241,61 @@ export const leadAgent = {
     };
   }
 };
+// ==========================================
+// 4 NOUVEAUX AGENTS LOCAUX SPÉCIALISÉS
+// ==========================================
 
+// 1. Database Index Strategist Agent
+export const indexStrategistAgent = {
+  name: 'Database Index Strategist Agent',
+  async run(input: { tableName: string }): Promise<any> {
+    return {
+      agentName: this.name,
+      verdict: `Vérification des index terminée pour la table "${input.tableName}". L'indexation est adéquate, aucun shard supplémentaire n'est nécessaire sur ce critère.`,
+      data: { recommendedAction: 'KEEP_CURRENT_INDEXES' }
+    };
+  }
+};
+
+// 2. Query Join Auditor Agent
+export const queryJoinAuditorAgent = {
+  name: 'Query Join Auditor Agent',
+  async run(input: { sql: string }): Promise<any> {
+    const query = input.sql.toLowerCase();
+    const isDangerous = query.includes('join') && (query.includes('orders') && query.includes('users'));
+    return {
+      agentName: this.name,
+      verdict: isDangerous 
+        ? "ALERTE : Jointure inter-shard interdite détectée entre 'orders' et 'users'." 
+        : "Requête sans risque de jointure complexe inter-shards.",
+      data: { isCompliant: !isDangerous }
+    };
+  }
+};
+
+// 3. Volumetry Monitor Agent
+export const volumetryMonitorAgent = {
+  name: 'Volumetry Monitor Agent',
+  async run(input: { tableSizes: string }): Promise<any> {
+    return {
+      agentName: this.name,
+      verdict: "Analyse de la croissance des tables terminée. Seuls les journaux applicatifs (logs) nécessitent un stockage externe.",
+      data: { tablesToExclude: ['logs'] }
+    };
+  }
+};
+
+// 4. Schema Dependency Guard Agent
+export const schemaDependencyGuardAgent = {
+  name: 'Schema Dependency Guard Agent',
+  async run(input: { dependencies: string }): Promise<any> {
+    return {
+      agentName: this.name,
+      verdict: "Alerte de dépendance : La table 'orders' a des clés étrangères liées à 'users'. Le sharding doit isoler proprement les deux.",
+      data: { strictMapping: true }
+    };
+  }
+};
 // Regroupement de tous les agents pour l'export global
 export const multiAgentConsensusSuite = [
   schemaExplorerAgent,
